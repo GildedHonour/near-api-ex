@@ -63,6 +63,7 @@ defmodule NearApi.HttpClient do
   end
 
   defp endpoint_url do
+    # FIXME allow a configuration value
     System.get_env("NEAR_NODE_URL")
   end
 end

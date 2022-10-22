@@ -29,13 +29,17 @@ defmodule NearApi.Contract do
   @spec call(caller_account :: NearApi.Account.t(), contract_id :: String.t(), method :: String.t(), params :: map) ::
           {:ok, body :: map} | NearApi.RPC.Errors.t()
   def call(caller_account, contract_id, method, args) do
+    call_payable(caller_account, contract_id, method, args, 0)
+  end
+
+  def call_payable(caller_account, contract_id, method, args, attached_deposit \\ 0) do
     args_encoded = Jason.encode!(args)
 
     action = %NearApi.Actions.FunctionCall{
       method_name: method,
       args: args_encoded,
       gas: @gas,
-      amount: 0
+      amount: attached_deposit
     }
 
     {:ok, tx} = NearApi.Transaction.create_transaction(caller_account, contract_id, [action])
